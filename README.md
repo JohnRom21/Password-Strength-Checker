@@ -12,7 +12,7 @@ Lets the user choose a password untill all the requirements are checked.
 - Requires a strong password or lets you quit.
 
 ## How to Run
-1. Clone the repo: `git clone https://github.com/JohnRom21/password-strength-checker.git`
+1. Clone the repo: `git clone https://github.com/JohnRom21/Password-Strength-Checker.git`
 2. Navigate to: `cd password-strength-checker`
 3. Run: `python password_checker.py`
 
