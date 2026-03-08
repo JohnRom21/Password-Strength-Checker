@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Floating cyber particles */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image:
+                radial-gradient(circle, rgba(0,255,255,0.2) 2px, transparent 2px),
+                radial-gradient(circle, rgba(0,200,255,0.2) 2px, transparent 2px);
+            background-size: 60px 60px;
+            animation: floatParticles 40s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatParticles {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-200px);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            padding: 35px 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d2d2d;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        input[type="password"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: ##d3d3d3;
+            color: #2d2d2d;
+            border: 2d2d2d;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #00e5ff;  /* neon cyan fill on hover */
+            color: #1e1e1e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 229, 255, 0.6);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 14px;
+        }
+
+        .strong {
+            background: #e8f9ee;
+            color: #1b7f3b;
+            border-left: 6px solid #28a745;
+        }
+
+        .moderate {
+            background: #fff8e6;
+            color: #a36a00;
+            border-left: 6px solid #ffc107;
+        }
+
+        .weak {
+            background: #fdeaea;
+            color: #b02a37;
+            border-left: 6px solid #dc3545;
+        }
+
+        .result h2 {
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .accepted {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Strength Checker</h1>
+        <p class="subtitle">Check whether your password is strong, moderate, or weak.</p>
+
+        <form method="POST">
+            <label for="password">Enter your password</label>
+            <input type="password" id="password" name="password" placeholder="Type your password here" required>
+            <button type="submit">Check Password</button>
+        </form>
+
+        {% if strength %}
+            <div class="result
+                {% if 'Strong' in strength %}strong
+                {% elif 'Moderate' in strength %}moderate
+                {% else %}weak
+                {% endif %}">
+
+                <h2>{{ strength }}</h2>
+
+                {% if feedback %}
+                    <h3>Suggestions to improve:</h3>
+                    <ul>
+                        {% for suggestion in feedback %}
+                            <li>{{ suggestion }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="accepted">Password accepted!</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
