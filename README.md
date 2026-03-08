@@ -18,7 +18,15 @@ It provides **real-time feedback** and allows the user to re-enter the password 
 ## How to Run
 
 1. Clone the repository:
-
 ```bash
 git clone https://github.com/JohnRom21/Password-Strength-Checker.git
+```
+
+2. Navigate into the project folder:
+```bash
+cd Password-Strength-Checker
+```
+3. Run the Python script
+```bash
+python password_checker.py
 ```
