@@ -1,12 +1,16 @@
 import re
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
 
 def check_password_strength(password):
     score = 0
     feedback = []
-    # Define QWERTY keyboard sequences
-    letter_sequence = "qwertyuiopasdfghjklzxcvbnm"
-    number_sequence = "1234567890"
-    
+    # Define keyboard sequences
+    letter_sequence = ["qwertyuiopasdfghjklzxcvbnm"]
+    number_sequence = ["1234567890"]
+
     # Check length
     if len(password) >= 8:
         score += 1
@@ -36,31 +40,37 @@ def check_password_strength(password):
     if not re.search(r"(.)\1{2,}", password):
         score += 1
     else:
-        feedback.append("Password should not contain three or more consecutive identical characters (e.g., 'aaa' or '111').")
+        feedback.append(
+            "Password should not contain three or more consecutive identical characters (e.g., 'aaa' or '111').")
     # Check for three or more raising/falling characters
     has_sequence = False
     lower_password = password.lower()
+
+    def is_sequential(three_letters, sequences):
+        for seq in sequences:
+            if three_letters in seq or three_letters[::-1] in seq:
+                return True
+        return False
+
     for i in range(len(lower_password) - 2):
-        substring = lower_password[i:i+3]
+        three_letters = lower_password[i:i + 3]
         # Check letters
-        if all(c in letter_sequence for c in substring):
-            forward = letter_sequence.find(substring[0]) < letter_sequence.find(substring[1]) < letter_sequence.find(substring[2])
-            backward = letter_sequence.find(substring[0]) > letter_sequence.find(substring[1]) > letter_sequence.find(substring[2])
-            if forward or backward:
-                has_sequence = True
-                break
+        if three_letters.isalpha() and is_sequential(three_letters, letter_sequence):
+            has_sequence = True
+            break
+
         # Check numbers
-        if all(c in number_sequence for c in substring):
-            forward = number_sequence.find(substring[0]) < number_sequence.find(substring[1]) < number_sequence.find(substring[2])
-            backward = number_sequence.find(substring[0]) > number_sequence.find(substring[1]) > number_sequence.find(substring[2])
-            if forward or backward:
-                has_sequence = True
-                break
+        if three_letters.isdigit() and is_sequential(three_letters, number_sequence):
+            has_sequence = True
+            break
+
     if not has_sequence:
         score += 1
     else:
-        feedback.append("Password should not contain three or more consecutive characters in keyboard order (e.g., 'qwe', '123', 'edc').")
-    
+        feedback.append(
+            "Password should not contain three or more consecutive characters in keyboard order (e.g., 'qwe', '123', "
+            "'edc').")
+
     # Determine strength
     if score >= 7:
         return "Strong password!", feedback
@@ -69,20 +79,20 @@ def check_password_strength(password):
     else:
         return "Weak password.", feedback
 
-# Get user input and run until a strong password is provided or user quits
-while True:
-    password = input("Enter a password to check (or 'quit' to exit): ")
-    if password.lower() == 'quit':
-        print("Exiting password checker.")
-        break
-    strength, feedback = check_password_strength(password)
-    print(f"Password Strength: {strength}")
-    if feedback:
-        print("Suggestions to improve:")
-        for suggestion in feedback:
-            print(f"- {suggestion}")
-    if strength == "Strong password!":
-        print("Password accepted!")
-        break
-    else:
-        print("Password does not meet all requirements. Please try again or type 'quit' to exit.")
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    strength = None
+    feedback = []
+
+    if request.method == "POST":
+        password = request.form["password"]
+        strength, feedback = check_password_strength(password)
+
+    return render_template("index.html", strength=strength, feedback=feedback)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
