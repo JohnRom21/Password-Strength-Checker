@@ -21,3 +21,4 @@ It provides **real-time feedback** and allows the user to re-enter the password 
 
 ```bash
 git clone https://github.com/JohnRom21/Password-Strength-Checker.git
+```
